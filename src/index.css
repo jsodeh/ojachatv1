@@ -1,0 +1,154 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-grok-light-background text-grok-light-text-primary;
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+.dark body {
+  @apply bg-grok-dark-background text-grok-dark-text-primary;
+}
+
+.grok-input {
+  @apply bg-grok-light-input text-grok-light-text-primary border border-grok-light-border rounded-2xl px-6 py-3 focus:outline-none focus:ring-1 focus:ring-grok-light-border shadow-sm ;
+  min-height: 120px;
+  resize: none;
+}
+ 
+.dark .grok-input {
+  @apply bg-grok-dark-input text-grok-dark-text-primary border-grok-dark-border focus:ring-grok-dark-border;
+}
+
+@keyframes glowing-border {
+}
+
+.grok-button {
+  @apply flex items-center gap-2 rounded-full px-4 py-2.5 text-sm bg-grok-light-button-bg hover:bg-grok-light-button-hover border border-grok-light-border transition-all duration-200 text-grok-light-text-primary;
+}
+
+.dark .grok-button {
+  @apply bg-grok-dark-button-bg hover:bg-grok-dark-button-hover border-grok-dark-border text-grok-dark-text-primary;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  max-width: none !important;
+  width: 100vw;
+}
+
+/* Grok specific spacing */
+.grok-vertical-spacing {
+  height: 8vh;
+  padding-bottom: 20px;
+}
+
+.grok-welcome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 2rem;
+  width: 100%;
+  padding-bottom: 10px;
+}
+
+.grok-welcome-title {
+  font-size: 2rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  @apply text-grok-light-text-primary;
+}
+
+.dark .grok-welcome-title {
+  @apply text-grok-dark-text-primary;
+}
+
+.grok-welcome-subtitle {
+  font-size: 1.25rem;
+  font-weight: 400;
+  @apply text-grok-light-text-secondary;
+}
+
+.dark .grok-welcome-subtitle {
+  @apply text-grok-dark-text-secondary;
+}
+
+.grok-input-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+@media (min-width: 768px) {
+  .grok-input-container {
+    width: calc(100% - 20px);
+  }
+}
+
+.grok-action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  width: 100%;
+  max-width: 820px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 16px;
+  flex-wrap: wrap;
+}
+
+.grok-footer {
+  margin-top: 1rem;
+  text-align: center;
+  @apply text-grok-light-text-tertiary;
+  font-size: 0.75rem;
+  width: 100%;
+  padding-bottom: 20px;
+}
+
+.dark .grok-footer {
+  @apply text-grok-dark-text-tertiary;
+}
+
+/* Center main content */
+.grok-main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* Override any max-width constraints */
+.max-w-2xl, .max-w-3xl, .max-w-4xl {
+  width: 100%;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: 820px !important;
+}
+
+/* Main container */
+main {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding-top: 60px;
+}

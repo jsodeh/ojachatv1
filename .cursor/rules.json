@@ -1,0 +1,132 @@
+{
+  "name": "OjaChat Development Guidelines",
+  "description": "Rules and guidelines for maintaining and developing the OjaChat application",
+  "version": "1.0.0",
+  "rules": {
+    "code_organization": {
+      "description": "Directory structure and code organization rules",
+      "guidelines": [
+        "Use /components for reusable UI components",
+        "Use /contexts for React context providers",
+        "Use /pages for main application views",
+        "Use /providers for external service integrations",
+        "Use /hooks for custom React hooks",
+        "Use /utils for utility functions",
+        "Use /types for TypeScript type definitions"
+      ]
+    },
+    "feature_implementation": {
+      "description": "Rules for implementing new features",
+      "guidelines": [
+        "Always implement feature access control using FeatureCheck and UsageLimitCheck components",
+        "Track feature usage using useTrackFeatureUsage hook",
+        "Follow subscription-based access control system",
+        "Maintain proper error boundaries around new features",
+        "Implement proper usage tracking for metered features",
+        "Follow subscription plan limits and restrictions"
+      ]
+    },
+    "authentication": {
+      "description": "Authentication and authorization rules",
+      "guidelines": [
+        "Use AuthProvider context for authentication state",
+        "Implement proper auth checks using AuthWrapper",
+        "Follow existing auth modal pattern for login/signup flows",
+        "Maintain proper session management"
+      ]
+    },
+    "ui_ux": {
+      "description": "UI/UX design and implementation guidelines",
+      "guidelines": [
+        "Support both light and dark themes using ThemeProvider",
+        "Use existing toast notification system (Toaster)",
+        "Maintain consistent styling using global CSS classes",
+        "Follow existing color scheme (grok-light/dark variants)",
+        "Maintain responsive design principles"
+      ]
+    },
+    "state_management": {
+      "description": "State management rules",
+      "guidelines": [
+        "Use React Context for global state (Auth, Cart, Theme)",
+        "Implement proper error handling using ErrorBoundary",
+        "Follow existing pattern for modal state management",
+        "Maintain proper state immutability"
+      ]
+    },
+    "subscription_handling": {
+      "description": "Subscription and usage tracking rules",
+      "guidelines": [
+        "Check subscription status before implementing premium features",
+        "Implement proper usage tracking for metered features",
+        "Follow subscription plan limits and restrictions",
+        "Use existing subscription management components",
+        "Maintain proper usage reset functionality"
+      ]
+    },
+    "code_quality": {
+      "description": "Code quality standards",
+      "guidelines": [
+        "Maintain TypeScript type safety",
+        "Follow existing component structure",
+        "Implement proper error handling",
+        "Use proper React hooks and patterns",
+        "Maintain consistent file naming conventions",
+        "Follow React best practices"
+      ]
+    },
+    "testing": {
+      "description": "Testing requirements",
+      "guidelines": [
+        "Test features across different subscription tiers",
+        "Verify usage limit enforcement",
+        "Test authentication flows",
+        "Verify feature access control",
+        "Test theme switching functionality",
+        "Implement proper unit and integration tests"
+      ]
+    },
+    "subscription_plans": {
+      "description": "Available subscription plans and their features",
+      "plans": {
+        "basic": {
+          "name": "Basic Plan (Free)",
+          "features": [
+            "10 Chats/Month",
+            "1,000 words/Month",
+            "10 Minutes Voice Mode/Month",
+            "5 Image Shopping",
+            "5 Free Online shopping",
+            "Standard Support"
+          ]
+        },
+        "market_pro": {
+          "name": "Market PRO (₦25,000)",
+          "features": [
+            "Unlimited Chats",
+            "10,000 words",
+            "120 Minutes Voice Mode",
+            "20 Image Shopping",
+            "20 Free Online shopping",
+            "Group Shopping",
+            "Priority Support"
+          ]
+        },
+        "oja_prime": {
+          "name": "OjaPRIME (₦150,000)",
+          "features": [
+            "Unlimited Chats",
+            "Unlimited words",
+            "Free Deliveries (10)",
+            "Unlimited Voice Mode",
+            "Group Shopping",
+            "Unlimited Image Shopping",
+            "Unlimited Online shopping",
+            "24/7 Support",
+            "Auto Shopper"
+          ]
+        }
+      }
+    }
+  }
+} 

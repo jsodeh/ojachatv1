@@ -1,0 +1,22 @@
+
+{
+  "name": "OjaChat",
+  "short_name": "OjaChat",
+  "description": "AI Shopping Assistant for Market Runs",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#22C55E",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "src": "/favicon.png"
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

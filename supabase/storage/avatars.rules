@@ -1,0 +1,20 @@
+// Storage rules for the avatars bucket
+{
+  "version": "1.0",
+  "match": {
+    "bucketId": "avatars",
+    "userId": "$userId" 
+  },
+  "rules": {
+    "files": {
+      "$userId/*": {
+        "read": true,
+        "write": "$userId = auth.uid"
+      },
+      "*": {
+        "read": true,
+        "write": false
+      }
+    }
+  }
+} 
