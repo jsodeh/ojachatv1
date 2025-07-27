@@ -1,0 +1,227 @@
+{
+  "name": "OjaChat Assistant Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "id": "chat-trigger",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -800,
+        300
+      ],
+      "webhookId": "ojachat-assistant"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "shopper",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -800,
+        500
+      ],
+      "webhookId": "ojachat-shopper"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "parse-chat-input",
+              "name": "chatInput",
+              "value": "={{ $json?.chatInput || $json.body.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "parse-session-id",
+              "name": "sessionId",
+              "value": "={{ $json?.sessionId || $json.body.sessionId}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "edit-fields",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -540,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "model": "claude-3-5-sonnet-20241022",
+        "options": {}
+      },
+      "id": "anthropic-model",
+      "name": "Anthropic Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [
+        -340,
+        520
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "You are a friendly and helpful sales associate at OjaChat, a digital marketplace that helps users find and purchase various products. Your role is to assist customers in finding the perfect items while maintaining a warm, conversational tone.\n\nYou have access to a product search tool that can scrape e-commerce websites to find products. When users mention specific products or ask about prices, you should:\n\n1. **Analyze the request** to understand:\n   - What product they want (e.g., \"MacBook Pro M4\", \"iPhone 16\")\n   - Which website they mentioned (e.g., \"Jumia\", \"Amazon\") or suggest appropriate ones\n   - Their intent (buying, price checking, comparing)\n\n2. **Select appropriate URLs** based on common e-commerce sites:\n   - Jumia: \"https://www.jumia.com.ng\" (for African markets)\n   - Amazon: \"https://www.amazon.com\"\n   - Best Buy: \"https://www.bestbuy.com\"\n   - eBay: \"https://www.ebay.com\"\n   - Generic: Use the most relevant site for the product\n\n3. **Use the search tool** with the right URL and product query\n\nYou MUST format your responses in the following EXACT structure:\n\n{\n  \"text\": \"Your friendly message here without any JSON or technical content\",\n  \"rawResponse\": {\n    \"products\": [\n      {\n        \"id\": \"unique-id\",\n        \"name\": \"Product Name\",\n        \"image\": \"Image URL\",\n        \"description\": \"Product description\",\n        \"price\": 29.99,\n        \"category\": \"Category\"\n      }\n    ]\n  }\n}\n\nIMPORTANT FORMATTING RULES:\n1. NEVER include JSON, URLs, or technical content in the \"text\" field\n2. NEVER return raw JSON as part of your message\n3. Your entire response must be a single valid JSON object\n4. Keep the text response friendly and conversational\n5. Put ALL product details in the rawResponse.products array\n\nWhen crafting your responses:\n1. Be welcoming and personable - use a friendly, casual tone while remaining professional\n2. Show genuine enthusiasm for helping customers find what they need\n3. Make personalized product suggestions based on their interests\n4. Ask clarifying questions when needed to better understand their needs\n5. Share relevant alternatives if exact items aren't available\n6. Use natural transitions and conversational language\n7. Express empathy and understanding\n8. Keep text responses warm and concise\n\nExample good response:\n{\n  \"text\": \"I found some great MacBook Pro M4 options for you! Here are the latest models available.\",\n  \"rawResponse\": {\n    \"products\": [\n      {\n        \"id\": \"macbook-pro-m4-14\",\n        \"name\": \"MacBook Pro 14-inch M4\",\n        \"image\": \"https://example.com/macbook.jpg\",\n        \"description\": \"Latest MacBook Pro with M4 chip\",\n        \"price\": 1999.99,\n        \"category\": \"Laptops\"\n      }\n    ]\n  }\n}\n\nExample bad response (DO NOT DO THIS):\nI found MacBook Pro M4! Here are the details: {\"text\": \"message\", \"rawResponse\": {...}}\n\nRemember:\n- Make customers feel heard and valued\n- Be proactive in offering relevant suggestions\n- Express enthusiasm for helping them shop\n- Keep responses conversational and engaging\n- Show personality while maintaining professionalism\n- If you can't find certain information, be honest and offer to help find alternatives\n- Put ALL product information in the products array\n- Return ONLY valid JSON\n- NEVER mix display text with JSON structure\n- Always tell the user if you didn't find the answer. Don't make something up just to please them\n\nUse the product search tool when customers mention specific products, brands, or ask about prices from specific websites."
+        }
+      },
+      "id": "product-assistant",
+      "name": "Product Search Assistant",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        -320,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "webhook-response",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        20,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "toolDescription": "Search for products on e-commerce websites. Provide the website URL and search query to find products with name, price, description, and image URLs. Use this when users ask about specific products or mention specific websites like Jumia, Amazon, etc.",
+        "method": "POST",
+        "url": "http://localhost:5678/webhook/product-scraper",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"url\": {{ JSON.stringify($fromAI('website_url', 'https://www.jumia.com.ng')) }},\n  \"query\": {{ JSON.stringify($fromAI('product_query', 'products')) }},\n  \"prompt\": {{ JSON.stringify('Extract product information for: ' + $fromAI('product_query', 'products') + '. Include name, price, description, image URL, and category. Limit to maximum 5 products.') }}\n}",
+        "options": {},
+        "fieldsToInclude": "selected",
+        "fields": "products,message,status"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        520
+      ],
+      "id": "product-search-tool",
+      "name": "Product Search Tool"
+    },
+    {
+      "parameters": {
+        "content": "## 🛍️ OjaChat Assistant\n\n### Features:\n- **Smart URL Detection**: Automatically selects the right e-commerce site\n- **Natural Language**: \"I want MacBook Pro M4\" → Structured search\n- **Website Intelligence**: Recognizes Jumia, Amazon, Best Buy, etc.\n- **Chat + API**: Both chat interface and webhook endpoint\n\n### Example Queries:\n- \"I want to buy MacBook Pro M4\"\n- \"How much is iPhone 16 on Jumia?\"\n- \"Show me wireless headphones from Amazon\"\n- \"Find me laptops under $1000\"\n\n### API Endpoint:\n`POST /webhook/shopper`\n```json\n{\n  \"chatInput\": \"I want MacBook Pro M4\",\n  \"sessionId\": \"user-123\"\n}\n```\n\n### Response Format:\n```json\n{\n  \"text\": \"Found some great MacBooks!\",\n  \"rawResponse\": {\n    \"products\": [...]\n  }\n}\n```",
+        "height": 480,
+        "width": 420,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1260,
+        40
+      ],
+      "id": "assistant-documentation",
+      "name": "Assistant Documentation"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Product Search Assistant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Product Search Assistant",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Product Search Assistant": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Product Search Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Product Search Assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": []
+}

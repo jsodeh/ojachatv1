@@ -12,8 +12,8 @@ interface MoreOptionsDialogProps {
   position: { top: number; left: number } | null;
 }
 
-const MoreOptionsDialog: React.FC<MoreOptionsDialogProps> = ({
-  isOpen,
+const MoreOptionsDialog: React.FC<MoreOptionsDialogProps> = ({ 
+  isOpen, 
   onClose,
   position
 }) => {
@@ -87,7 +87,7 @@ const MoreOptionsDialog: React.FC<MoreOptionsDialogProps> = ({
             <img src={JumiaIcon} alt="Jumia" className="h-4 w-4" />
             <span>Buy from Jumia</span>
           </button>
-
+          
           <button 
             className="flex items-center gap-2 w-full p-2 text-sm rounded-md hover:bg-grok-light-button-hover dark:hover:bg-grok-dark-button-hover text-left"
             onClick={() => handleOptionClick('buy_konga')}
@@ -95,7 +95,7 @@ const MoreOptionsDialog: React.FC<MoreOptionsDialogProps> = ({
             <img src={KongaIcon} alt="KONGA" className="h-4 w-4" />
             <span>Buy from KONGA</span>
           </button>
-
+          
           <button 
             className="flex items-center gap-2 w-full p-2 text-sm rounded-md hover:bg-grok-light-button-hover dark:hover:bg-grok-dark-button-hover text-left"
             onClick={() => handleOptionClick('search_jiji')}
@@ -103,14 +103,14 @@ const MoreOptionsDialog: React.FC<MoreOptionsDialogProps> = ({
             <img src={JijiIcon} alt="Jiji" className="h-4 w-4" />
             <span>Search Jiji</span>
           </button>
-
-          <button 
+          
+            <button 
             className="flex items-center gap-2 w-full p-2 text-sm rounded-md hover:bg-grok-light-button-hover dark:hover:bg-grok-dark-button-hover text-left"
             onClick={() => handleOptionClick('shop_aliexpress')}
           >
             <img src={AliExpressIcon} alt="AliExpress" className="h-4 w-4" />
             <span>Shop on AliExpress</span>
-          </button>
+            </button>
 
           <button 
             className="flex items-center gap-2 w-full p-2 text-sm rounded-md hover:bg-grok-light-button-hover dark:hover:bg-grok-dark-button-hover text-left"
@@ -119,7 +119,7 @@ const MoreOptionsDialog: React.FC<MoreOptionsDialogProps> = ({
             <img src={TemuIcon} alt="TEMU" className="h-4 w-4" />
             <span>Buy from TEMU</span>
           </button>
-
+          
           <button 
             className="flex items-center gap-2 w-full p-2 text-sm rounded-md hover:bg-grok-light-button-hover dark:hover:bg-grok-dark-button-hover text-left"
             onClick={() => handleOptionClick('whatsapp_mode')}

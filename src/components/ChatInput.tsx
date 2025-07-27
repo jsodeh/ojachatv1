@@ -156,7 +156,10 @@ const ChatInput = ({ onSend, isLoading = false, isLarge = false, sessionId, onAt
 
   useEffect(() => {
     if (isRecording && canvasRef.current) {
-      setupVisualizer();
+      // Small delay to ensure the canvas is rendered
+      setTimeout(() => {
+        setupVisualizer();
+      }, 50);
     } else if (!isRecording && canvasRef.current && !audioBlob) {
       drawInitialVisualizer();
     }
@@ -227,7 +230,12 @@ const ChatInput = ({ onSend, isLoading = false, isLarge = false, sessionId, onAt
       canvas.height = rect.height;
     };
     
-    setCanvasSize();
+    // Wait for next frame to ensure canvas is rendered
+    requestAnimationFrame(() => {
+      setCanvasSize();
+      visualize();
+    });
+    
     window.addEventListener('resize', setCanvasSize);
   };
 
@@ -319,18 +327,21 @@ const ChatInput = ({ onSend, isLoading = false, isLarge = false, sessionId, onAt
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = rect.height;
-    const WIDTH = canvas.width;
-    const HEIGHT = canvas.height;
-    const fakeFreqData = new Uint8Array(128);
-    for (let i = 0; i < fakeFreqData.length; i++) {
-      fakeFreqData[i] = 20 + Math.sin(i / 10) * 10;
-    }
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(0, 0, WIDTH, HEIGHT);
-    drawVisualizer(ctx, fakeFreqData, WIDTH, HEIGHT);
+    
+    // Wait for next frame to ensure canvas is rendered
+    requestAnimationFrame(() => {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      const WIDTH = canvas.width;
+      const HEIGHT = canvas.height;
+      const fakeFreqData = new Uint8Array(128);
+      for (let i = 0; i < fakeFreqData.length; i++) {
+        fakeFreqData[i] = 20 + Math.sin(i / 10) * 10;
+      }
+      ctx.clearRect(0, 0, WIDTH, HEIGHT);
+      drawVisualizer(ctx, fakeFreqData, WIDTH, HEIGHT);
+    });
   };
 
   const startRecording = async () => {
@@ -541,40 +552,47 @@ const ChatInput = ({ onSend, isLoading = false, isLarge = false, sessionId, onAt
 
   return (
     <div className="relative w-full max-w-full md:max-w-[800px] md:w-[calc(100%-20px)] mx-auto">
-      {isRecording || audioBlob ? (
-        <div className="relative flex items-center justify-center bg-grok-light-secondary dark:bg-grok-dark-secondary rounded-lg px-4 py-2" style={{ minHeight: isLarge ? "140px" : "120px", height: isLarge ? "140px" : "120px" }}>
-          {micError ? (
-            <p className="text-red-500 text-sm">{micError}</p>
-          ) : (
-            <div className="w-full h-full flex flex-col justify-center items-center">
-              <canvas ref={canvasRef} className="w-full h-16"></canvas>
-              <div className="text-sm text-grok-light-text-secondary dark:text-grok-dark-text-secondary mt-2">
-                {formatDuration(recordingDuration)}
+      <div 
+        className={`grok-input w-full text-base relative ${isRecording || audioBlob ? 'bg-grok-light-secondary dark:bg-grok-dark-secondary' : ''}`}
+        style={{ minHeight: isLarge ? "140px" : "120px" }}
+      >
+        {isRecording || audioBlob ? (
+          <div className="w-full h-full flex items-center px-4 py-2">
+            {micError ? (
+              <p className="text-red-500 text-sm">{micError}</p>
+            ) : (
+              <div className="w-full flex items-center gap-3">
+                <div className="text-sm text-grok-light-text-secondary dark:text-grok-dark-text-secondary font-mono">
+                  {formatDuration(recordingDuration)}
+                </div>
+                <div className="flex-1 flex items-center justify-center">
+                  <canvas ref={canvasRef} className="h-[30px] w-full max-w-[200px]"></canvas>
+                </div>
               </div>
-            </div>
-          )}
-          {(isRecording || audioBlob) && (
-            <button
-              onClick={deleteRecording}
-              className="absolute top-2 right-2 text-grok-light-text-secondary dark:text-grok-dark-text-secondary hover:text-red-500"
-              aria-label="Delete recording"
-            >
-              <XCircle className="h-5 w-5" />
-            </button>
-          )}
-        </div>
-      ) : (
-        <textarea
-          rows={isLarge ? 4 : 3}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={isLoading ? "Connecting to service..." : currentText || "What do you want to know?"}
-          className="grok-input w-full text-base"
-          style={{ minHeight: isLarge ? "140px" : "120px" }}
-          disabled={isLoading || isRecording}
-        />
-      )}
+            )}
+            {(isRecording || audioBlob) && (
+              <button
+                onClick={deleteRecording}
+                className="absolute top-2 right-2 text-grok-light-text-secondary dark:text-grok-dark-text-secondary hover:text-red-500"
+                aria-label="Delete recording"
+              >
+                <XCircle className="h-5 w-5" />
+              </button>
+            )}
+          </div>
+        ) : (
+          <textarea
+            rows={isLarge ? 4 : 3}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={isLoading ? "Connecting to service..." : currentText || "What do you want to know?"}
+            className="w-full h-full bg-transparent border-none outline-none resize-none"
+            style={{ minHeight: isLarge ? "140px" : "120px" }}
+            disabled={isLoading || isRecording}
+          />
+        )}
+      </div>
       
       <div className="absolute bottom-4 left-4 flex items-center gap-2 text-grok-light-text-secondary dark:text-grok-dark-text-secondary z-10">
           <button 

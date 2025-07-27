@@ -107,20 +107,20 @@ export default function App() {
                 <CartProvider>
                   <NotificationProvider>
                     <AuthWrapper>
-                      <ElevenLabsProvider>
-                        <Routes>
-                          {/* Main App Routes */}
-                          <Route path="/" element={
+                    <ElevenLabsProvider>
+                      <Routes>
+                        {/* Main App Routes */}
+                        <Route path="/" element={
                             <Index />
-                          } />
-                          <Route path="delivery/checkout" element={<DeliveryCheckoutWrapper />} />
-                          <Route path="/privacy" element={<Privacy />} />
-                          <Route path="/terms" element={<Terms />} />
-                          {/* Add more main app routes here */}
-                        </Routes>
-                        <AuthModalHandler />
-                        <SubscriptionModalHandler />
-                        <Toaster />
+                        } />
+                        <Route path="delivery/checkout" element={<DeliveryCheckoutWrapper />} />
+                        <Route path="/privacy" element={<Privacy />} />
+                        <Route path="/terms" element={<Terms />} />
+                        {/* Add more main app routes here */}
+                      </Routes>
+                      <AuthModalHandler />
+                      <SubscriptionModalHandler />
+                      <Toaster />
                         {/* Floating Action Button for ElevenLabs Conversational Modal */}
                         <Button 
                           onClick={handleOpenConversationalModal}
@@ -133,7 +133,7 @@ export default function App() {
                           isOpen={isConversationalModalOpen}
                           onClose={handleCloseConversationalModal}
                         />
-                      </ElevenLabsProvider>
+                    </ElevenLabsProvider>
                     </AuthWrapper>
                   </NotificationProvider>
                 </CartProvider>

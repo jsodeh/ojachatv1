@@ -12,7 +12,6 @@ export interface Product {
   price: number;
   image: string;
   description?: string;
-  features?: string[];
 }
 
 export interface OrderStatus {

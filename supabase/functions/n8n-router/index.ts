@@ -11,7 +11,9 @@ const allowedOrigins = [
   'http://172.20.96.1:8080',     // Local development
   'http://localhost:8080',        // Local development alternative
   'https://ojachat.app',          // Production domain
-  'https://www.ojachat.app'       // Production www subdomain
+  'https://www.ojachat.app',      // Production www subdomain
+  'https://ojachat.shop',         // Production domain (new)
+  'https://www.ojachat.shop'      // Production www subdomain (new)
 ];
 
 // Function to get CORS headers based on request origin

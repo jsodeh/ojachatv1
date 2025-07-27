@@ -14,10 +14,11 @@ import { useAuth } from "@/contexts/AuthContext";
 interface CartModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCheckoutSuccess: (orderId: string, status: string, totalAmount: number) => void;
+  onCheckout: () => void; // Original prop to trigger checkout process
+  onOrderStatus?: (status: OrderStatus) => void; // Added back as it's used
 }
 
-const CartModal = ({ isOpen, onClose, onCheckoutSuccess }: CartModalProps) => {
+const CartModal = ({ isOpen, onClose, onCheckout, onOrderStatus }: CartModalProps) => {
   const { items, updateQuantity, removeItem, totalItems, totalAmount } = useCart();
   const { isAuthenticated } = useAuth();
   const [showOrderStatus, setShowOrderStatus] = useState(false);
@@ -61,8 +62,14 @@ const CartModal = ({ isOpen, onClose, onCheckoutSuccess }: CartModalProps) => {
 
       setShowOrderStatus(true);
       
-      if (onCheckoutSuccess && data) {
-        onCheckoutSuccess(data.id, 'pending', data.total_amount);
+      if (onOrderStatus && data) {
+        const orderStatus: OrderStatus = {
+          type: 'order_status',
+          message: 'Your order has been received and is being processed',
+          orderId: data.id,
+          status: 'pending'
+        };
+        onOrderStatus(orderStatus);
       }
       
       setTimeout(() => {
@@ -91,7 +98,7 @@ const CartModal = ({ isOpen, onClose, onCheckoutSuccess }: CartModalProps) => {
       setPendingOrder(false);
       handleCreateOrder();
     }
-  }, [isAuthenticated, pendingOrder, handleCreateOrder]); // Added handleCreateOrder to dependency array
+  }, [isAuthenticated, pendingOrder]); // Added pendingOrder to dependency array
 
   if (items.length === 0) {
     return (
@@ -207,4 +214,4 @@ const CartModal = ({ isOpen, onClose, onCheckoutSuccess }: CartModalProps) => {
   );
 };
 
-export default CartModal;
+export default CartModal; 

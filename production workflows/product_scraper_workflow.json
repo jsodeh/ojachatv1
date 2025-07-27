@@ -1,0 +1,475 @@
+{
+  "name": "Product Scraper",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "product-scraper",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -680,
+        -80
+      ],
+      "id": "af4d5919-f59c-4a56-9b6c-9be8943e2949",
+      "name": "Product Scraper Webhook",
+      "webhookId": "product-scraper-webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "parse-url",
+              "name": "url",
+              "type": "string",
+              "value": "={{ $json.body.url || 'https://quotes.toscrape.com' }}"
+            },
+            {
+              "id": "parse-query",
+              "name": "query",
+              "type": "string",
+              "value": "={{ $json.body.query || 'products' }}"
+            },
+            {
+              "id": "parse-prompt",
+              "name": "prompt",
+              "type": "string",
+              "value": "={{ $json.body.prompt || 'Extract product information including name, price, description, and image URL. Limit to maximum 5 products.' }}"
+            },
+            {
+              "id": "create-schema",
+              "name": "schema",
+              "type": "object",
+              "value": "={\n  \"type\": \"object\",\n  \"properties\": {\n    \"products\": {\n      \"type\": \"array\",\n      \"maxItems\": 5,\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"name\": {\n            \"type\": \"string\",\n            \"description\": \"Product name\"\n          },\n          \"price\": {\n            \"type\": \"number\",\n            \"description\": \"Product price as a number\"\n          },\n          \"description\": {\n            \"type\": \"string\",\n            \"description\": \"Product description\"\n          },\n          \"image\": {\n            \"type\": \"string\",\n            \"description\": \"Product image URL\"\n          },\n          \"category\": {\n            \"type\": \"string\",\n            \"description\": \"Product category\"\n          }\n        },\n        \"required\": [\"name\", \"price\", \"description\", \"image\"]\n      }\n    }\n  },\n  \"required\": [\"products\"]\n}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -460,
+        -80
+      ],
+      "id": "4a97f352-03d8-47e8-ada9-4710aec1ba1b",
+      "name": "Parse Input"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/extract",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"urls\": [{{ JSON.stringify($json.url) }}],\n  \"prompt\": {{ JSON.stringify($json.prompt) }},\n  \"schema\": {{ $json.schema }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -240,
+        -80
+      ],
+      "id": "8821a434-44d4-4f5b-8f48-18b4541d5f52",
+      "name": "Start Firecrawl Extraction",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "fEaO3lSfSOTibB6X",
+          "name": "Firecrawl"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -20,
+        -80
+      ],
+      "id": "aedd0aa4-59d1-4253-b22d-b146d9b97963",
+      "name": "Initial Wait",
+      "webhookId": "scraper-initial-wait"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.firecrawl.dev/v1/extract/{{ $('Start Firecrawl Extraction').item.json.id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        -80
+      ],
+      "id": "2adffa63-92f2-4b4e-9e71-97ae96080ba8",
+      "name": "Check Status",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "fEaO3lSfSOTibB6X",
+          "name": "Firecrawl"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "check-completion",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "completed",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        440,
+        -80
+      ],
+      "id": "871d428e-5aa8-44ef-8abc-00d0a7d52b67",
+      "name": "Check If Completed"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        440,
+        140
+      ],
+      "id": "84ba6042-44e3-4ef8-8f54-18ef85120b2a",
+      "name": "Retry Wait",
+      "webhookId": "scraper-retry-wait"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "increment-retry",
+              "name": "retryCount",
+              "type": "number",
+              "value": "={{ ($('Check Status').item.json.retryCount || 0) + 1 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -100,
+        160
+      ],
+      "id": "240027b9-aa2d-4032-9891-9eee42fb44f8",
+      "name": "Increment Retry Counter"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "check-max-retries",
+              "leftValue": "={{ $json.retryCount }}",
+              "rightValue": 12,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        220,
+        160
+      ],
+      "id": "a9ca0d35-3a92-4364-9962-fef4293a005d",
+      "name": "Check Max Retries"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "format-products",
+              "name": "products",
+              "type": "array",
+              "value": "={{ $json.data && $json.data.length > 0 && $json.data[0].products ? $json.data[0].products.slice(0, 5).map(product => ({\n  id: (product.name || '').toLowerCase().replace(/[^a-z0-9]/g, '-').substring(0, 50),\n  name: product.name || 'Unknown Product',\n  image: product.image || '',\n  description: product.description || '',\n  price: typeof product.price === 'number' ? product.price : parseFloat(product.price) || 0,\n  category: product.category || 'General'\n})) : [] }}"
+            },
+            {
+              "id": "format-status",
+              "name": "status",
+              "type": "string",
+              "value": "success"
+            },
+            {
+              "id": "format-message",
+              "name": "message",
+              "type": "string",
+              "value": "=Successfully extracted {{ $json.data && $json.data.length > 0 && $json.data[0].products ? Math.min($json.data[0].products.length, 5) : 0 }} products"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        660,
+        -80
+      ],
+      "id": "9e33e24c-836d-4817-9a36-2da9290d147c",
+      "name": "Format Success Response"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "error-status",
+              "name": "status",
+              "type": "string",
+              "value": "error"
+            },
+            {
+              "id": "error-message",
+              "name": "message",
+              "type": "string",
+              "value": "=Extraction failed or timed out. Current status: {{ $('Check Status').item.json.status || 'unknown' }}"
+            },
+            {
+              "id": "error-products",
+              "name": "products",
+              "type": "array",
+              "value": "=[]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        540,
+        420
+      ],
+      "id": "8f02012a-3504-407b-a372-0ed5091cb402",
+      "name": "Format Error Response"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": {{ $json.status === 'success' }},\n  \"status\": {{ JSON.stringify($json.status) }},\n  \"message\": {{ JSON.stringify($json.message) }},\n  \"products\": {{ JSON.stringify($json.products || []) }},\n  \"metadata\": {\n    \"extractedAt\": {{ JSON.stringify(new Date().toISOString()) }},\n    \"productsFound\": {{ ($json.products || []).length }}\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        40
+      ],
+      "id": "97788fa4-2a4b-4e1f-8cfb-95d94a3ed5f2",
+      "name": "Webhook Response"
+    },
+    {
+      "parameters": {
+        "content": "## 🔥 Product Scraper Service\n\n### Purpose:\nDedicated scraping service that the OjaChat Assistant calls to extract product data from e-commerce websites.\n\n### Input Format:\n```json\n{\n  \"url\": \"https://www.jumia.com.ng\",\n  \"query\": \"MacBook Pro M4\",\n  \"prompt\": \"Extract product info with images\"\n}\n```\n\n### Features:\n- **Firecrawl Integration**: Uses Firecrawl API for extraction\n- **Auto Polling**: Waits for completion automatically\n- **Product Schema**: Optimized for e-commerce data\n- **5 Product Limit**: Maximum products per request\n- **Retry Logic**: Up to 12 attempts with 5s intervals\n\n### Output Format:\n```json\n{\n  \"success\": true,\n  \"status\": \"success\",\n  \"message\": \"Successfully extracted 3 products\",\n  \"products\": [...],\n  \"metadata\": {\n    \"extractedAt\": \"2025-01-15T10:30:00Z\",\n    \"productsFound\": 3\n  }\n}\n```\n\n### Usage:\nThis workflow is called by the OjaChat Assistant as a tool when users request product information.",
+        "height": 940,
+        "width": 420,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1380,
+        -220
+      ],
+      "id": "90d7f188-5779-499b-8382-e38fd80b2205",
+      "name": "Scraper Documentation"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Product Scraper Webhook": {
+      "main": [
+        [
+          {
+            "node": "Parse Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Input": {
+      "main": [
+        [
+          {
+            "node": "Start Firecrawl Extraction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start Firecrawl Extraction": {
+      "main": [
+        [
+          {
+            "node": "Initial Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initial Wait": {
+      "main": [
+        [
+          {
+            "node": "Check Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Status": {
+      "main": [
+        [
+          {
+            "node": "Check If Completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check If Completed": {
+      "main": [
+        [
+          {
+            "node": "Format Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Increment Retry Counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Increment Retry Counter": {
+      "main": [
+        [
+          {
+            "node": "Check Max Retries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Max Retries": {
+      "main": [
+        [
+          {
+            "node": "Retry Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retry Wait": {
+      "main": [
+        [
+          {
+            "node": "Check Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Success Response": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Error Response": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "176ba551-3dab-4d95-81ce-576d3c4f9d72",
+  "meta": {
+    "instanceId": "921c190337d58bc136d4c33e8b99327f836a0f21ede3c076ee2e7d46b40edb40"
+  },
+  "id": "iLqWvX3ZkqTwrNnf",
+  "tags": []
+}
