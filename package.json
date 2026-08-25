@@ -12,6 +12,7 @@
     "generate-pwa-assets": "node scripts/generate-pwa-assets.js"
   },
   "dependencies": {
+    "@11labs/client": "^0.2.0",
     "@hookform/resolvers": "^3.9.0",
     "@modelcontextprotocol/sdk": "^1.11.4",
     "@radix-ui/react-accordion": "^1.2.0",
@@ -52,7 +53,6 @@
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.3.0",
     "input-otp": "^1.2.4",
-    "lovable-tagger": "^1.1.7",
     "lucide-react": "^0.451.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",

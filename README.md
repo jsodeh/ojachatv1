@@ -1,131 +1,185 @@
-# Welcome to your GPT Engineer project
+# OjaChat: AI-Powered Local Shopping Assistant
 
-## Project info
+OjaChat is a conversational voice and text shopping assistant designed to simplify market runs and local shopping in Nigeria. Built as a Progressive Web App (PWA), it leverages artificial intelligence to help users check prices, buy foodstuff, find medicines, and coordinate group deliveries.
 
-**URL**: https://run.gptengineer.app/projects/9d4bcff1-da7e-4e73-bb35-7a988b4bdb7f/improve
+OjaChat interfaces with an automation backend powered by **n8n** and utilizes **Supabase** for database management, authentication, and metered usage tracking.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🌟 Core Features
 
-**Use GPT Engineer**
+- **🤖 AI-Driven Conversational Agent**: Text and voice interface that acts as a personal shopper, query router, and price validator.
+- **🎙️ Voice Conversational Mode**: Real-time voice interaction powered by **ElevenLabs Conversational AI**, providing natural and responsive vocal conversations.
+- **🛒 Complete Local Delivery Checkout**:
+  - Detailed product cart and group order checkout flows.
+  - Integrated **Google Maps Geocoder** address selection modal.
+  - Custom delivery scheduler with date calendar and slot limits.
+- **💳 Tiered Subscription & Metered Limits**:
+  - **Basic Plan (Free)**: 10 Chats, 1,000 Words, 10 Minutes Voice, 5 Image Shopping actions.
+  - **Market PRO (₦25,000/mo)**: Unlimited Chats, 20,000 Words, 100 Minutes Voice.
+  - **Premium (₦80,000/mo)**: Unlimited Chats, 100,000 Words, 500 Minutes Voice, Auto Shopper features.
+  - **OjaPRIME (₦150,000/mo)**: Unlimited access, 10 free deliveries, and 24/7 dedicated support.
+- **📱 Progressive Web App (PWA)**:
+  - Cache-first Service Worker offline capabilities.
+  - Mobile optimized layout with app shell, dynamic drawer modals, and custom iOS startup splash screens.
+  - PWA asset pipeline to generate multi-size app icons and launch splashes.
 
-Simply visit the GPT Engineer project at [GPT Engineer](https://gptengineer.app/projects/9d4bcff1-da7e-4e73-bb35-7a988b4bdb7f/improve) and start prompting.
+---
 
-Changes made via gptengineer.app will be committed automatically to this repo.
+## 🛠️ Technology Stack
 
-**Use your preferred IDE**
+- **Frontend Framework**: [Vite](https://vitejs.dev/) + [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- **UI Components**: [shadcn/ui](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/) + [Lucide Icons](https://lucide.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) + [PostCSS](https://postcss.org/)
+- **Routing**: [React Router DOM v6](https://reactrouter.com/)
+- **Database & Auth**: [Supabase](https://supabase.com/) (PostgreSQL, RLS Policies, Database Functions, Edge Functions, Storage Buckets)
+- **Voice Synthesis/AI**: [ElevenLabs Conversational Web SDK](https://elevenlabs.io/)
+- **LLM/Workflow Orchestration**: [n8n](https://n8n.io/)
+- **Image Processing**: [Sharp](https://sharp.pixelplumbing.com/) (Asset generation pipeline)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in the GPT Engineer UI.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 📂 Project Structure
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+├── .cursor/                # Cursor development guidelines & settings
+├── .vscode/                # VS Code deployment & editor settings
+├── n8n-workflows/          # Exported n8n production automation JSON workflows
+├── public/                 # Static PWA assets, icons, manifest, service workers
+├── scripts/                # Development & CLI helper scripts
+│   ├── check-admin.ts      # Query admin roles list in Supabase
+│   ├── test-connection.ts  # Test client connection to Supabase
+│   └── generate-pwa-assets.js # Resize raw logos to generate PWA icons
+├── src/                    # React Source Directory
+│   ├── components/         # Reusable UI components & modals
+│   ├── contexts/           # Global React Context Providers (Auth, Cart, Subscription, Theme)
+│   ├── hooks/              # Custom react hooks (animated hints, locations, subscription status)
+│   ├── integrations/       # API Clients configurations
+│   ├── pages/              # Primary route views (Index, Privacy, Terms, SubscriptionPage)
+│   ├── providers/          # ElevenLabs voice provider contexts
+│   └── styles/             # Tailwind theme configurations
+├── supabase/               # Supabase backend repository
+│   ├── functions/          # Deno Edge Functions (reset limits, n8n-router)
+│   ├── migrations/         # PostgreSQL schema migrations
+│   └── scripts/            # Storage bucket SQL/Bash setup helpers
+├── tailwind.config.ts      # Tailwind design token configuration
+└── tsconfig.json           # TypeScript configuration
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🚀 Local Installation & Setup
 
-**Use GitHub Codespaces**
+### Prerequisites
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Make sure you have [Node.js](https://nodejs.org/) (v18+) and [npm](https://www.npmjs.com/) or [Bun](https://bun.sh/) installed.
 
-## What technologies are used for this project?
+### 1. Clone the repository
+```bash
+git clone https://github.com/your-username/ojachat.git
+cd ojachat
+```
 
-This project is built with .
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-All GPT Engineer projects can be deployed directly via the GPT Engineer app.
-
-Simply visit your project at [GPT Engineer](https://gptengineer.app/projects/9d4bcff1-da7e-4e73-bb35-7a988b4bdb7f/improve) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.gptengineer.app/tips-tricks/custom-domain/)
-
-# Voice Chat with ElevenLabs AI
-
-This project demonstrates how to integrate ElevenLabs' conversational AI capabilities with speech recognition for a voice-based chat interface.
-
-## Setup
-
-1. Install dependencies:
+### 2. Install dependencies
 ```bash
 npm install
-# or
-yarn
 ```
 
-2. Create a `.env.local` file in the project root and add your ElevenLabs API key:
-```
-NEXT_PUBLIC_ELEVEN_LABS_API_KEY=your-api-key-here
-```
+### 3. Setup Environment Variables
+Create a `.env.local` file in the root directory and specify the following variables:
 
-3. (Optional) Configure a custom voice ID and model ID in the `voice-chat-demo.tsx` file.
+```env
+# Supabase Configuration
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key # Dev scripts only
 
-## Features
+# Google Maps API Key
+VITE_GOOGLE_MAPS_API_KEY=your-google-maps-api-key
 
-- Real-time speech recognition
-- Natural conversation flow with ElevenLabs AI
-- Voice playback of AI responses
-- Conversation history display
-- Start/Stop listening controls
-- Clear conversation option
-
-## Usage
-
-1. Navigate to `/voice-chat-demo` in your browser
-2. Click the microphone button to start listening
-3. Speak your message
-4. The AI will respond with voice and text
-5. Click the microphone again to stop listening
-6. Use the clear button to reset the conversation
-
-## Component Usage
-
-```tsx
-import { VoiceChat } from '../components/VoiceChat';
-
-export default function YourPage() {
-  return (
-    <VoiceChat
-      apiKey={process.env.NEXT_PUBLIC_ELEVEN_LABS_API_KEY}
-      modelId="eleven_turbo_v2" // Optional
-      voiceId="your-voice-id" // Optional
-    />
-  );
-}
+# ElevenLabs Voice Configuration
+NEXT_PUBLIC_ELEVEN_LABS_API_KEY=your-eleven-labs-api-key
 ```
 
-## Props
+### 4. Run the Development Server
+```bash
+npm run dev
+```
+The app will start at `http://localhost:8888` (or port configured in `vite.config.ts`).
 
-- `apiKey` (required): Your ElevenLabs API key
-- `modelId` (optional): The ID of the ElevenLabs model to use
-- `voiceId` (optional): The ID of the voice to use for responses
+---
+
+## 🗄️ Supabase Backend Configuration
+
+OjaChat utilizes Supabase database migrations to manage users, roles, subscriptions, and usage logs.
+
+### 1. Database Migrations
+To push current migrations to your Supabase project:
+```bash
+npx supabase db push
+```
+
+The migrations cover:
+- `user_roles`: Admin, manager, and user access levels.
+- `subscription_plans`: Subscription tiers metadata and limits.
+- `user_subscriptions`: Subscriptions mapping users to tiers.
+- `subscription_usage`: Metered usage counts (chats, voice minutes, words).
+- `profiles`: User information schema.
+
+### 2. Setup Storage Buckets
+Run the storage configurations to create the `avatars` bucket and configure RLS:
+```bash
+# SQL way: copy-paste contents of the file in the Supabase SQL editor
+# or run the helper bash script:
+chmod +x supabase/scripts/setup-storage.sh
+./supabase/scripts/setup-storage.sh
+```
+
+### 3. Deploy Edge Functions
+Deploy the utility edge functions used for router routing and resetting usage limits:
+```bash
+npx supabase functions deploy reset-usage-limits
+npx supabase functions deploy n8n-router
+
+# Schedule the limit reset cron to execute daily
+npx supabase functions schedule cron '0 0 * * *' reset-usage-limits
+```
+
+---
+
+## 🔗 n8n Workflow Routing
+
+The AI chat is orchestrated using the n8n JSON workflows stored in the `n8n-workflows/` directory:
+- **`OjaChat Assistant.json`**: Primary chat coordinator router that handles query processing, entity extraction, and price validations.
+- **`firecrawl_webhook_scraper.json`**: Real-time market product scaper webhook powered by Firecrawl.
+- **`product_scraper_workflow.json`**: Background product indexing and matching workflow.
+
+Import these JSON files directly into your self-hosted or cloud n8n workspace to instantiate the routers.
+
+---
+
+## 🛠️ CLI Helper Tools
+
+Run these scripts locally to manage and troubleshoot the application:
+
+- **Generate PWA Assets**:
+  Generate PWA multi-sized icons and iOS splash screens from your source logo in `assets/ojastack.png`.
+  ```bash
+  npm run generate-pwa-assets
+  ```
+- **Check Admins**:
+  Lists all users currently registered with admin roles in your database.
+  ```bash
+  npx ts-node-esm scripts/check-admin.ts
+  ```
+- **Test Connection**:
+  Tests connection to your remote Supabase instance.
+  ```bash
+  npx ts-node-esm scripts/test-connection.ts
+  ```
+
+---
+
+## 📝 License
+
+This project is open-source and licensed under the [ISC License](LICENSE).
