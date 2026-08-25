@@ -6,11 +6,11 @@ This folder contains the code for the OjaChat subscription system. Below are ins
 
 The subscription system includes:
 
-1. **Three Subscription Plans**:
-   - **Basic Plan (Free)**: 10 Chats/Month, 1,000 words/Month, 10 Minutes Voice Mode/Month, 5 Image Shopping, 5 Free Online shopping, Standard Support
-   - **Basic (₦25,000)**: Unlimited Chats, 20,000 words, 100 Minutes Voice Mode, 15 Image Shopping, 15 Free Online shopping, Priority Support.
-   - **Premium (₦80,000)**: Unlimited Chats, 100,000 words, 500 Minutes Voice Mode, 50 Image Shopping, 50 Free Online shopping, Group Shopping, Auto Shopper, 24/7 Support.
-   - **OjaPRIME (₦150,000)**: Unlimited Chats, Unlimited words, Unlimited Voice Mode, Unlimited Image Shopping, Unlimited Online shopping, Unlimited Free Deliveries, Group Shopping, Auto Shopper, Dedicated Support, Early Access to New Features.
+1. **Flexible Subscription Tiers**:
+   - **Basic Plan (Free)**: Access to standard features, voice mode, and image shopping with monthly limits.
+   - **Market PRO**: Expanded tier with unlimited chats, higher word counts, voice mode duration, and priority support.
+   - **Premium**: Advanced tier offering higher allocations, auto-shopping assistance, and group features.
+   - **OjaPRIME**: Comprehensive tier providing maximum access, priority support, and complimentary deliveries.
 
 2. **Automatic Limit Tracking**:
    - Usage tracked for metered features

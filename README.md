@@ -15,10 +15,10 @@ OjaChat interfaces with an automation backend powered by **n8n** and utilizes **
   - Integrated **Google Maps Geocoder** address selection modal.
   - Custom delivery scheduler with date calendar and slot limits.
 - **💳 Tiered Subscription & Metered Limits**:
-  - **Basic Plan (Free)**: 10 Chats, 1,000 Words, 10 Minutes Voice, 5 Image Shopping actions.
-  - **Market PRO (₦25,000/mo)**: Unlimited Chats, 20,000 Words, 100 Minutes Voice.
-  - **Premium (₦80,000/mo)**: Unlimited Chats, 100,000 Words, 500 Minutes Voice, Auto Shopper features.
-  - **OjaPRIME (₦150,000/mo)**: Unlimited access, 10 free deliveries, and 24/7 dedicated support.
+  - **Basic Plan (Free)**: Access to essential chat features, voice conversations, and basic shopping actions with metered limits.
+  - **Market PRO**: Offers unlimited chat access with elevated word and voice limits.
+  - **Premium**: High-volume tier featuring expanded word limits, voice duration, and auto-shopping features.
+  - **OjaPRIME**: Complete access package with unlimited usage, dedicated support, and free deliveries.
 - **📱 Progressive Web App (PWA)**:
   - Cache-first Service Worker offline capabilities.
   - Mobile optimized layout with app shell, dynamic drawer modals, and custom iOS startup splash screens.
